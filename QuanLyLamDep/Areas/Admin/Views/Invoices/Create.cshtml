@@ -1,0 +1,204 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+@model QuanLyLamDep.Models.Invoice
+
+@{
+    ViewBag.Title = "Tạo hóa đơn mới";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<style>
+    .form-horizontal {
+        max-width: 600px;
+        margin: 20px auto 40px;
+        background: #fff;
+        padding: 25px 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        font-family: 'Varela Round', sans-serif;
+    }
+
+        .form-horizontal h4 {
+            margin-bottom: 25px;
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.6rem;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 10px;
+        }
+
+    .form-group {
+        display: flex;
+        margin-bottom: 20px;
+        align-items: center;
+    }
+
+        .form-group label {
+            width: 150px;
+            font-weight: 600;
+            color: #333;
+            padding-right: 15px;
+        }
+
+        .form-group .form-control {
+            flex: 1;
+            padding: 10px 12px;
+            font-size: 1rem;
+            border: 1.8px solid #ddd;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+
+            .form-group .form-control:focus {
+                border-color: #667eea;
+                outline: none;
+                box-shadow: 0 0 8px rgba(102,126,234,0.3);
+            }
+
+    .text-danger {
+        font-size: 0.875rem;
+        margin-top: 5px;
+        color: #dc3545;
+        display: block;
+        padding-left: 165px; /* align với input start */
+    }
+
+    .btn-submit {
+        display: block;
+        margin-left: 150px; /* căn sang bên phải đúng với label */
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 700;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #5469d4 0%, #5a4a9e 100%);
+        }
+
+    /* Nút quay lại danh sách */
+    .btn-back {
+        display: inline-block;
+        margin-left: 150px; /* căn sang phải như nút submit */
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+        color: white !important;
+        font-size: 1.1rem;
+        font-weight: 700;
+        border-radius: 25px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-back:hover {
+            background: linear-gradient(135deg, #5a6268 0%, #4e5457 100%);
+            color: white !important;
+            text-decoration: none;
+        }
+
+    /* Responsive cho màn hình nhỏ */
+    @@media (max-width: 600px) {
+        .form-horizontal {
+            padding: 20px 15px;
+        }
+
+        .form-group {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+            .form-group label {
+                width: 100%;
+                margin-bottom: 6px;
+                padding-right: 0;
+            }
+
+            .form-group .form-control {
+                width: 100%;
+            }
+
+        .text-danger {
+            padding-left: 0;
+        }
+
+        .btn-submit,
+        .btn-back {
+            margin-left: 0;
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Thông tin hóa đơn</h4>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CustomerID, "Khách hàng")
+            <div>
+                @Html.DropDownList("CustomerID", null, "-- Chọn khách hàng --", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.CustomerID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.TotalAmount, "Tổng tiền")
+            <div>
+                @Html.EditorFor(model => model.TotalAmount, new { htmlAttributes = new { @class = "form-control", type = "number", step = "0.01", min = "0" } })
+                @Html.ValidationMessageFor(model => model.TotalAmount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PaymentMethod, "Phương thức thanh toán")
+            <div>
+                @Html.DropDownListFor(m => m.PaymentMethod, new SelectList(new[] {
+                    new { Value = "Tiền mặt", Text = "Tiền mặt" },
+                    new { Value = "Thẻ", Text = "Thẻ" },
+                    new { Value = "Chuyển khoản", Text = "Chuyển khoản" }
+                }, "Value", "Text"), "-- Chọn phương thức --", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.PaymentMethod, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PaymentStatus, "Trạng thái thanh toán")
+            <div>
+                @Html.DropDownListFor(m => m.PaymentStatus, new SelectList(new[] {
+                    new { Value = "Chưa thanh toán", Text = "Chưa thanh toán" },
+                    new { Value = "Thanh toán một phần", Text = "Thanh toán một phần" },
+                    new { Value = "Đã thanh toán", Text = "Đã thanh toán" }
+                }, "Value", "Text"), "-- Chọn trạng thái --", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.PaymentStatus, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EmployeeID, "Nhân viên")
+            <div>
+                @Html.DropDownList("EmployeeID", null, "-- Chọn nhân viên --", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.EmployeeID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Tạo hóa đơn" class="btn-submit" />
+        </div>
+
+        <div class="form-group">
+            @Html.ActionLink("Quay lại danh sách", "Index", null, new { @class = "btn-back" })
+        </div>
+    </div>
+}

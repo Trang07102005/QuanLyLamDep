@@ -1,0 +1,360 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - HỆ THỐNG QUẢN LÝ SALON LÀM ĐẸP</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Varela Round', sans-serif;
+            padding: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Logo section */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo img {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text p {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #FFD700;
+            text-transform: uppercase;
+            margin: 0;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-text span {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: 0.5px;
+        }
+
+        /* Navigation menu */
+        nav ul {
+            display: flex;
+            gap: 5px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            position: relative;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 12px 18px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        nav ul li a:hover {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        nav ul li a i {
+            font-size: 1rem;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .auth-buttons a {
+            text-decoration: none;
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(238, 90, 36, 0.3);
+        }
+
+        .auth-buttons a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(238, 90, 36, 0.4);
+        }
+
+        .container.body-content {
+            padding: 30px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .admin-header p {
+            color: #666;
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        /* Main content area */
+        .main-content {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+
+        footer {
+            background: linear-gradient(135deg, #333 0%, #555 100%);
+            padding: 25px 0;
+            color: #fff;
+            text-align: center;
+            margin-top: 50px;
+            border-radius: 20px 20px 0 0;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Responsive design */
+        @@media (max-width: 1200px) {
+            header {
+                padding: 15px 30px;
+            }
+
+            nav ul {
+                gap: 3px;
+            }
+
+            nav ul li a {
+                padding: 10px 15px;
+                font-size: 0.85rem;
+            }
+
+            .logo-text p {
+                font-size: 1.2rem;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            nav ul li a {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+
+            .container.body-content {
+                padding: 20px;
+            }
+
+            .admin-header h2 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Animation for smooth loading */
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .main-content {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="~/Content/my-logo.png" alt="Beauty Salon Logo" />
+            <div class="logo-text">
+                <p>Beauty Salon</p>
+                <span>Hệ thống quản lý</span>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li>
+                    <a href="~/Admin/Home/Index">
+                        <i class="fas fa-home"></i>
+                        Trang chủ
+                    </a>
+                </li>
+                <li>
+                    <a href="~/Admin/Customers/Index">
+                        <i class="fas fa-users"></i>
+                        Khách hàng
+                    </a>
+                </li>
+                <li>
+                    <a href="~/Admin/Employees/Index">
+                        <i class="fas fa-user-tie"></i>
+                        Nhân viên
+                    </a>
+                </li>
+                <li>
+                    <a href="~/Admin/Services/Index">
+                        <i class="fas fa-spa"></i>
+                        Dịch vụ
+                    </a>
+                </li>
+                <li>
+                    <a href="~/Admin/Products/Index">
+                        <i class="fas fa-bottle-droplet"></i>
+                        Sản phẩm
+                    </a>
+                </li>
+                <li>
+                    <a href="~/Admin/Invoices/Index">
+                        <i class="fas fa-receipt"></i>
+                        Hóa đơn
+                    </a>
+                </li>
+                <li>
+                    <a href="~/Admin/Reports/Index">
+                        <i class="fas fa-chart-line"></i>
+                        Báo cáo
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            @if (Session["Username"] != null)
+            {
+                <a href="~/Account/Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Đăng xuất
+                </a>
+            }
+            else
+            {
+                <a href="~/Account/Login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Đăng nhập
+                </a>
+            }
+        </div>
+    </header>
+
+    <div class="container body-content">
+        <div class="admin-header">
+            <h2>@ViewBag.Title</h2>
+            <p>Hệ thống quản lý salon làm đẹp chuyên nghiệp</p>
+        </div>
+
+        <div class="main-content">
+            @RenderBody() <!-- Main content will be injected here -->
+        </div>
+
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Hệ thống Quản lý Salon Làm Đẹp. Thiết kế bởi Beauty Management System.</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false) <!-- Optional section for additional scripts -->
+</body>
+</html>
+

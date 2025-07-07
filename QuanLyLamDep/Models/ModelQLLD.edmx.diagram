@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="5dcacc52631b479aa6fa54f5e3411f16" Name="Diagram1">
+        <EntityTypeShape EntityType="BeautySalonDBModel.Category" Width="1.5" PointX="3.5" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautySalonDBModel.Customer" Width="1.5" PointX="0.75" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautySalonDBModel.Employee" Width="1.5" PointX="0.75" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautySalonDBModel.Invoice" Width="1.5" PointX="3" PointY="2.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautySalonDBModel.InvoiceDetail" Width="1.5" PointX="6.5" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautySalonDBModel.Payment" Width="1.5" PointX="5.25" PointY="8" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautySalonDBModel.Product" Width="1.5" PointX="6.375" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautySalonDBModel.ProductSale" Width="1.5" PointX="9.625" PointY="3.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautySalonDBModel.Service" Width="1.5" PointX="3" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautySalonDBModel.ServiceGroup" Width="1.5" PointX="0.75" PointY="9.375" IsExpanded="true" />
+        <AssociationConnector Association="BeautySalonDBModel.FK__Product__Categor__4CA06362" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautySalonDBModel.FK__Invoice__Custome__5441852A" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautySalonDBModel.FK__Invoice__Employe__5535A963" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautySalonDBModel.FK__InvoiceDe__Invoi__59FA5E80" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautySalonDBModel.FK__Payment__Invoice__6754599E" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautySalonDBModel.FK__ProductSa__Invoi__5FB337D6" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautySalonDBModel.FK__InvoiceDe__Servi__5AEE82B9" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautySalonDBModel.FK__ProductSa__Produ__60A75C0F" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautySalonDBModel.FK__Service__Service__44FF419A" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

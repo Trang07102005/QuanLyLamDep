@@ -1,0 +1,171 @@
+﻿@model IEnumerable<QuanLyLamDep.Models.Payment>
+
+@{
+    ViewBag.Title = "Danh sách thanh toán";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .payment-list-container h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    body {
+        font-family: 'Varela Round', sans-serif;
+    }
+
+    .payment-list-container {
+        max-width: 1000px;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow-x: auto;
+        padding: 20px;
+    }
+
+    table.payment-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+    }
+
+        table.payment-table th,
+        table.payment-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        table.payment-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        table.payment-table tbody tr:hover {
+            background-color: rgba(102, 126, 234, 0.1);
+            cursor: pointer;
+        }
+
+    .btn-action {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-decoration: none;
+        color: white;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+
+    .btn-edit {
+        background: #667eea;
+        margin-right: 10px;
+    }
+
+        .btn-edit:hover {
+            background: #5469d4;
+        }
+
+    .btn-details {
+        background: #20c997;
+    }
+
+        .btn-details:hover {
+            background: #17a68a;
+        }
+
+    .btn-delete {
+        background: #dc3545;
+    }
+
+        .btn-delete:hover {
+            background: #bb2d3b;
+        }
+
+    .create-new-btn {
+        display: inline-block;
+        margin-bottom: 15px;
+        padding: 10px 25px;
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        font-weight: 700;
+        border-radius: 25px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+        .create-new-btn:hover {
+            background: #198754;
+        }
+
+    /* Flex container cho các nút thao tác */
+    .action-buttons {
+        display: flex;
+        gap: 10px; /* Khoảng cách giữa các nút */
+        flex-wrap: nowrap;
+    }
+
+    @@media (max-width: 768px) {
+        table.payment-table th,
+        table.payment-table td {
+            padding: 8px 10px;
+            font-size: 0.85rem;
+        }
+
+        .btn-action {
+            padding: 5px 10px;
+            font-size: 0.75rem;
+        }
+        /* Cho phép các nút thao tác xuống hàng trên màn hình nhỏ */
+        .action-buttons {
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+    }
+</style>
+
+<link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap&subset=vietnamese" rel="stylesheet" />
+
+<div class="payment-list-container">
+    <h2>@ViewBag.Title</h2>
+
+    <p>
+        @Html.ActionLink("Tạo thanh toán mới", "Create", null, new { @class = "create-new-btn" })
+    </p>
+
+    <table class="payment-table">
+        <thead>
+            <tr>
+                <th>Số tiền</th>
+                <th>Ngày thanh toán</th>
+                <th>Phương thức</th>
+                <th>Trạng thái</th>
+                <th>Phương thức hóa đơn</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Amount.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</td>
+                    <td>@(item.PaymentDate.HasValue ? item.PaymentDate.Value.ToString("dd/MM/yyyy") : "")</td>
+                    <td>@item.Method</td>
+                    <td>@item.Status</td>
+                    <td>@(item.Invoice?.PaymentMethod ?? "N/A")</td>
+                    <td>
+                        <div class="action-buttons">
+                            @Html.ActionLink("Sửa", "Edit", new { id = item.PaymentID }, new { @class = "btn-action btn-edit" })
+                            @Html.ActionLink("Chi tiết", "Details", new { id = item.PaymentID }, new { @class = "btn-action btn-details" })
+                            @Html.ActionLink("Xóa", "Delete", new { id = item.PaymentID }, new { @class = "btn-action btn-delete", onclick = "return confirm('Bạn có chắc chắn muốn xóa thanh toán này?');" })
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

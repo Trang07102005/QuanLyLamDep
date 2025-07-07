@@ -1,0 +1,292 @@
+﻿@model QuanLyLamDep.Models.Payment
+
+@{
+    ViewBag.Title = "Chi tiết thanh toán";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .payment-container {
+        max-width: 800px;
+        margin: 30px auto;
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        font-family: 'Varela Round', sans-serif;
+    }
+
+    .payment-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+        position: relative;
+    }
+
+        .payment-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="pattern" patternUnits="userSpaceOnUse" width="20" height="20"><circle cx="10" cy="10" r="2" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23pattern)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .payment-header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .payment-header .payment-number {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-top: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+    .payment-body {
+        padding: 40px;
+    }
+
+    .payment-info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    .info-section {
+        background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+        padding: 25px;
+        border-radius: 15px;
+        border-left: 4px solid #667eea;
+    }
+
+        .info-section h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+    }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+    .info-label {
+        font-weight: 600;
+        color: #555;
+        font-size: 0.95rem;
+    }
+
+    .info-value {
+        font-weight: 500;
+        color: #333;
+        text-align: right;
+    }
+
+    .payment-status {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-paid {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .status-unpaid {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    .status-partial {
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+    }
+
+    .total-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 25px;
+        border-radius: 15px;
+        margin: 30px 0;
+        text-align: center;
+    }
+
+    .total-amount {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 10px 0;
+    }
+
+    .total-label {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    .btn {
+        padding: 12px 30px;
+        border: none;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        color: white;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-secondary {
+        background: #6c757d;
+    }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    @@media (max-width: 768px) {
+        .payment-info-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .payment-body {
+            padding: 30px 20px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .total-amount {
+            font-size: 2rem;
+        }
+
+        .payment-header h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<div class="payment-container">
+    <div class="payment-header">
+        <h1><i class="fas fa-credit-card"></i> Chi tiết thanh toán</h1>
+        <div class="payment-number">Mã thanh toán: #@Model.PaymentID</div>
+    </div>
+
+    <div class="payment-body">
+        <div class="payment-info-grid">
+            <!-- Payment Information -->
+            <div class="info-section">
+                <h3><i class="fas fa-info-circle"></i> Thông tin thanh toán</h3>
+                <div class="info-item">
+                    <span class="info-label">Số tiền:</span>
+                    <span class="info-value">@Model.Amount.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Ngày thanh toán:</span>
+                    <span class="info-value">@(Model.PaymentDate.HasValue ? Model.PaymentDate.Value.ToString("dd/MM/yyyy") : "")</span>
+
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Phương thức thanh toán:</span>
+                    <span class="info-value">@Model.Method</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Trạng thái:</span>
+                    <span class="info-value">
+                        @{
+                            string statusClass = "";
+                            switch (Model.Status)
+                            {
+                                case "Hoàn tất":
+                                    statusClass = "status-paid";
+                                    break;
+                                case "Đang xử lý":
+                                    statusClass = "status-partial";
+                                    break;
+                                case "Thất bại":
+                                    statusClass = "status-unpaid";
+                                    break;
+                                default:
+                                    statusClass = "status-unpaid";
+                                    break;
+                            }
+                        }
+                        <span class="payment-status @statusClass">@Model.Status</span>
+                    </span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Phương thức hóa đơn:</span>
+                    <span class="info-value">@Model.Invoice?.PaymentMethod ?? "N/A"</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            @Html.ActionLink("Chỉnh sửa", "Edit", new { id = Model.PaymentID }, new { @class = "btn btn-primary" })
+            @Html.ActionLink("Quay lại danh sách", "Index", null, new { @class = "btn btn-secondary" })
+        </div>
+    </div>
+</div>

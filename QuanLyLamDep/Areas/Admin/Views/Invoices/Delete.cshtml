@@ -1,0 +1,144 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+@model QuanLyLamDep.Models.Invoice
+
+@{
+    ViewBag.Title = "Xóa hóa đơn";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<style>
+    .delete-container {
+        max-width: 600px;
+        margin: 30px auto 50px;
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        padding: 30px 35px;
+        font-family: 'Varela Round', sans-serif;
+    }
+
+        .delete-container h3 {
+            color: #dc3545;
+            font-weight: 700;
+            margin-bottom: 25px;
+            font-size: 1.6rem;
+            text-align: center;
+        }
+
+    dl.dl-horizontal {
+        margin: 0;
+        padding: 0;
+    }
+
+        dl.dl-horizontal dt {
+            float: left;
+            width: 140px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 15px;
+            clear: left;
+        }
+
+        dl.dl-horizontal dd {
+            margin-left: 150px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+    .form-actions {
+        margin-top: 30px;
+        text-align: center;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        border: none;
+        transition: background-color 0.3s ease;
+        text-decoration: none;
+        color: white;
+        margin: 0 10px;
+        min-width: 120px;
+    }
+
+    input[type="submit"].btn {
+        background: #dc3545;
+    }
+
+        input[type="submit"].btn:hover {
+            background: #bb2d3b;
+        }
+
+    a.btn {
+        background: #6c757d;
+    }
+
+        a.btn:hover {
+            background: #5a6268;
+            color: white;
+            text-decoration: none;
+        }
+
+    @@media (max-width: 600px) {
+        dl.dl-horizontal dt,
+        dl.dl-horizontal dd {
+            float: none;
+            width: 100%;
+            margin-left: 0;
+        }
+
+        dl.dl-horizontal dt {
+            margin-top: 15px;
+        }
+
+        .btn {
+            margin: 10px 5px;
+            width: 100%;
+            min-width: auto;
+        }
+    }
+</style>
+
+<div class="delete-container">
+    <h3>Bạn có chắc chắn muốn xóa hóa đơn này?</h3>
+    <div>
+        <h4>Thông tin hóa đơn</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>@Html.DisplayNameFor(model => model.CreatedDate)</dt>
+            <dd>@Html.DisplayFor(model => model.CreatedDate)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.TotalAmount)</dt>
+            <dd>@Html.DisplayFor(model => model.TotalAmount)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.PaymentMethod)</dt>
+            <dd>@Html.DisplayFor(model => model.PaymentMethod)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.PaymentStatus)</dt>
+            <dd>@Html.DisplayFor(model => model.PaymentStatus)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.Customer.FullName)</dt>
+            <dd>@Html.DisplayFor(model => model.Customer.FullName)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.Employee.FullName)</dt>
+            <dd>@Html.DisplayFor(model => model.Employee.FullName)</dd>
+        </dl>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Xóa" class="btn" />
+                @Html.ActionLink("Quay lại danh sách", "Index", null, new { @class = "btn" })
+            </div>
+        }
+    </div>
+</div>

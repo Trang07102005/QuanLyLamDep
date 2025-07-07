@@ -1,0 +1,367 @@
+﻿@model QuanLyLamDep.Models.Invoice
+
+@{
+    ViewBag.Title = "Chi tiết hóa đơn";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .invoice-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        font-family: 'Varela Round', sans-serif;
+    }
+
+    .invoice-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+        position: relative;
+    }
+
+        .invoice-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="pattern" patternUnits="userSpaceOnUse" width="20" height="20"><circle cx="10" cy="10" r="2" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23pattern)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .invoice-header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .invoice-header .invoice-number {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-top: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+    .invoice-body {
+        padding: 40px;
+    }
+
+    .invoice-info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    .info-section {
+        background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+        padding: 25px;
+        border-radius: 15px;
+        border-left: 4px solid #667eea;
+    }
+
+        .info-section h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+    }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+    .info-label {
+        font-weight: 600;
+        color: #555;
+        font-size: 0.95rem;
+    }
+
+    .info-value {
+        font-weight: 500;
+        color: #333;
+        text-align: right;
+    }
+
+    .payment-status {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-paid {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .status-unpaid {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    .status-partial {
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+    }
+
+    .total-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 25px;
+        border-radius: 15px;
+        margin: 30px 0;
+        text-align: center;
+    }
+
+    .total-amount {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 10px 0;
+    }
+
+    .total-label {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    .btn {
+        padding: 12px 30px;
+        border: none;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        color: white;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-secondary {
+        background: #6c757d;
+    }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .details-section {
+        margin-top: 30px;
+        padding: 25px;
+        background: #f8f9fa;
+        border-radius: 15px;
+        border: 1px solid #e9ecef;
+    }
+
+        .details-section h4 {
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+    @@media (max-width: 768px) {
+        .invoice-info-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .invoice-body {
+            padding: 30px 20px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .total-amount {
+            font-size: 2rem;
+        }
+
+        .invoice-header h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<div class="invoice-container">
+    <div class="invoice-header">
+        <h1><i class="fas fa-receipt"></i> Chi tiết hóa đơn</h1>
+        <div class="invoice-number">Mã hóa đơn: #@Model.InvoiceID</div>
+    </div>
+
+    <div class="invoice-body">
+        <div class="invoice-info-grid">
+            <!-- Customer Information -->
+            <div class="info-section">
+                <h3><i class="fas fa-user"></i> Thông tin khách hàng</h3>
+                <div class="info-item">
+                    <span class="info-label">Họ tên:</span>
+                    <span class="info-value">@Html.DisplayFor(model => model.Customer.FullName)</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Số điện thoại:</span>
+                    <span class="info-value">@Html.DisplayFor(model => model.Customer.Phone)</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">@Html.DisplayFor(model => model.Customer.Email)</span>
+                </div>
+            </div>
+
+            <!-- Invoice Information -->
+            <div class="info-section">
+                <h3><i class="fas fa-file-invoice"></i> Thông tin hóa đơn</h3>
+                <div class="info-item">
+                    <span class="info-label">Ngày tạo:</span>
+                    <span class="info-value">@Html.DisplayFor(model => model.CreatedDate)</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Nhân viên:</span>
+                    <span class="info-value">@Html.DisplayFor(model => model.Employee.FullName)</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Phương thức thanh toán:</span>
+                    <span class="info-value">@Html.DisplayFor(model => model.PaymentMethod)</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Trạng thái:</span>
+                    <span class="info-value">
+                        @{
+                            string statusClass = "";
+                            string statusText = Model.PaymentStatus;
+                            switch (Model.PaymentStatus)
+                            {
+                                case "Đã thanh toán":
+                                    statusClass = "status-paid";
+                                    break;
+                                case "Chưa thanh toán":
+                                    statusClass = "status-unpaid";
+                                    break;
+                                case "Thanh toán một phần":
+                                    statusClass = "status-partial";
+                                    break;
+                                default:
+                                    statusClass = "status-unpaid";
+                                    break;
+                            }
+                        }
+                        <span class="payment-status @statusClass">@statusText</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Amount Section -->
+        <div class="total-section">
+            <div class="total-label">Tổng tiền thanh toán</div>
+            <div class="total-amount">@Model.TotalAmount.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</div>
+        </div>
+
+        <!-- Service Details Section -->
+        <div class="details-section">
+            <h4><i class="fas fa-list-ul"></i> Chi tiết dịch vụ & sản phẩm</h4>
+            <p class="text-muted">
+                <i class="fas fa-info-circle"></i>
+                Để xem chi tiết các dịch vụ và sản phẩm trong hóa đơn, vui lòng chọn "Chỉnh sửa" hoặc xem trong danh sách hóa đơn.
+            </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            @Html.ActionLink("Chỉnh sửa", "Edit", new { id = Model.InvoiceID }, new { @class = "btn btn-primary" })
+            @Html.ActionLink("In hóa đơn", "Print", new { id = Model.InvoiceID }, new { @class = "btn btn-success" })
+            @Html.ActionLink("Quay lại danh sách", "Index", null, new { @class = "btn btn-secondary" })
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const infoItems = document.querySelectorAll('.info-item');
+        infoItems.forEach(item => {
+            item.addEventListener('mouseenter', function () {
+                this.style.backgroundColor = 'rgba(102, 126, 234, 0.05)';
+                this.style.transform = 'translateX(5px)';
+                this.style.transition = 'all 0.3s ease';
+            });
+            item.addEventListener('mouseleave', function () {
+                this.style.backgroundColor = 'transparent';
+                this.style.transform = 'translateX(0)';
+            });
+        });
+
+        const totalAmount = document.querySelector('.total-amount');
+        if (totalAmount) {
+            totalAmount.style.opacity = '0';
+            totalAmount.style.transform = 'scale(0.8)';
+
+            setTimeout(() => {
+                totalAmount.style.transition = 'all 0.6s ease';
+                totalAmount.style.opacity = '1';
+                totalAmount.style.transform = 'scale(1)';
+            }, 300);
+        }
+    });
+</script>
