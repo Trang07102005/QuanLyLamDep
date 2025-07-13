@@ -1,0 +1,353 @@
+﻿@model IEnumerable<QuanLyLamDep.Models.Product>
+
+@{
+    ViewBag.Title = "Chọn Sản Phẩm";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet" />
+
+<style>
+    body {
+        font-family: 'Varela Round', sans-serif;
+    }
+
+    .product-container {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+
+    .product-header {
+        text-align: center;
+        color: white;
+        margin-bottom: 3rem;
+    }
+
+        .product-header h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .product-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+
+    .product-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        position: relative;
+        border: 2px solid transparent;
+    }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+
+    .product-card-header {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .product-name {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .product-category {
+        background: rgba(255,255,255,0.2);
+        padding: 0.3rem 1rem;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        display: inline-block;
+    }
+
+    .product-body {
+        padding: 1.5rem;
+    }
+
+    .product-description {
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        height: 60px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+
+    .product-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+
+    .product-price {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #e91e63;
+    }
+
+    .product-unit {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .product-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-select {
+        flex: 1;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 600;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+        .btn-select:hover {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+            transform: scale(1.05);
+        }
+
+    .btn-details {
+        background: #f8f9fa;
+        color: #666;
+        border: 2px solid #e9ecef;
+        padding: 0.8rem 1rem;
+        border-radius: 25px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+        .btn-details:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+    .cart-sidebar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 350px;
+        height: 100vh;
+        background: white;
+        box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        z-index: 1000;
+        overflow-y: auto;
+        border-left: 5px solid #764ba2;
+    }
+
+        .cart-sidebar h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #764ba2;
+            text-align: center;
+        }
+
+        .cart-sidebar ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .cart-sidebar li {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+            font-size: 0.95rem;
+            color: #333;
+        }
+
+    .quantity-control {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 5px;
+    }
+
+    .quantity-btn {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.9rem;
+        background-color: #667eea;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        .quantity-btn:hover {
+            background-color: #5a67d8;
+        }
+
+    .btn-success {
+        margin-top: 1rem;
+        width: 100%;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+        .btn-success:hover {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+        }
+</style>
+
+<div class="product-container">
+    <div class="product-header">
+        <h1>Chọn Sản Phẩm</h1>
+        <p>Khám phá những sản phẩm chất lượng của chúng tôi</p>
+    </div>
+
+    <div class="products-grid">
+        @foreach (var item in Model)
+        {
+            <div class="product-card">
+                <div class="product-card-header">
+                    <div class="product-name">@item.Name</div>
+                    <div class="product-category">@item.Category?.Name</div>
+                </div>
+                <div class="product-body">
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                        <img src="@Url.Content(item.ImageUrl)" alt="Ảnh sản phẩm" style="width: 100%; height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 1rem;" />
+                    }
+                    <div class="product-description">@item.Description</div>
+                    <div class="product-details">
+                        <div class="product-price">@item.UnitPrice.ToString("N0") VNĐ</div>
+                        <div class="product-unit">Đơn vị: @item.Unit</div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn-select" onclick="addToCart('@item.ProductID', '@item.Name', @item.UnitPrice)">Chọn Mua</button>
+                        @Html.ActionLink("Chi Tiết", "Details", new { id = item.ProductID }, new { @class = "btn-details" })
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Cart Sidebar -->
+<div class="cart-sidebar" id="cartSidebar" style="display: none;">
+    <h3>Giỏ Hàng</h3>
+    <ul id="cartList"></ul>
+    <div style="margin-top: 1rem;">
+        <strong>Tổng cộng:</strong> <span id="cartTotal">0</span> VNĐ
+    </div>
+    <form id="checkoutForm" method="post" action="@Url.Action("Checkout", "Products")">
+        <input type="hidden" name="selectedProducts" id="selectedProductsInput" />
+        <button type="button" class="btn-success" onclick="confirmCheckout()">Thanh Toán Ngay</button>
+    </form>
+</div>
+
+<script>
+    let cart = [];
+
+    function addToCart(productId, productName, price) {
+        const existing = cart.find(item => item.id === productId);
+        if (existing) {
+            existing.quantity += 1;
+        } else {
+            cart.push({ id: productId, name: productName, price: parseFloat(price), quantity: 1 });
+        }
+        renderCart();
+        document.getElementById("cartSidebar").style.display = "block";
+    }
+
+    function updateQuantity(productId, delta) {
+        const item = cart.find(x => x.id === productId);
+        if (item) {
+            item.quantity += delta;
+            if (item.quantity <= 0) cart = cart.filter(x => x.id !== productId);
+            renderCart();
+        }
+    }
+
+    function renderCart() {
+        const cartList = document.getElementById("cartList");
+        const cartTotal = document.getElementById("cartTotal");
+        const selectedProductsInput = document.getElementById("selectedProductsInput");
+
+        cartList.innerHTML = "";
+        let total = 0;
+        let products = [];
+
+        cart.forEach(product => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+                <strong>${product.name}</strong><br/>
+                ${product.price.toLocaleString()} VNĐ x ${product.quantity}
+                <div class="quantity-control">
+                    <button class="quantity-btn" onclick="updateQuantity('${product.id}', -1)">-</button>
+                    <span>${product.quantity}</span>
+                    <button class="quantity-btn" onclick="updateQuantity('${product.id}', 1)">+</button>
+                </div>
+            `;
+            cartList.appendChild(li);
+            total += product.price * product.quantity;
+            products.push(`${product.id}:${product.quantity}`);
+        });
+
+        cartTotal.textContent = total.toLocaleString();
+        selectedProductsInput.value = products.join(",");
+    }
+
+    function confirmCheckout() {
+        if (cart.length === 0) {
+            alert("❌ Vui lòng chọn ít nhất 1 sản phẩm trước khi thanh toán.");
+            return;
+        }
+
+        const confirmResult = confirm("💳 Bạn có chắc chắn muốn thanh toán các sản phẩm đã chọn?");
+        if (confirmResult) {
+            document.getElementById("checkoutForm").submit();
+        }
+    }
+</script>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success" style="margin: 15px;">@TempData["Success"]</div>
+}

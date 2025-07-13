@@ -17,8 +17,12 @@ namespace QuanLyLamDep.Controllers
         // GET: Invoices
         public ActionResult Index()
         {
-            var invoices = db.Invoices.Include(i => i.Customer).Include(i => i.Employee);
-            return View(invoices.ToList());
+            var invoices = db.Invoices
+                .Include(i => i.Customer)
+                .Include(i => i.Employee)
+                .ToList();
+
+            return View(invoices);
         }
 
         // GET: Invoices/Details/5
@@ -28,13 +32,23 @@ namespace QuanLyLamDep.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Invoice invoice = db.Invoices.Find(id);
+
+            var invoice = db.Invoices
+                .Include(i => i.Customer)
+                .Include(i => i.Employee)
+                .Include(i => i.InvoiceDetails.Select(d => d.Service))
+                .Include(i => i.ProductSales.Select(p => p.Product))
+                .Include(i => i.Payments)
+                .FirstOrDefault(i => i.InvoiceID == id);
+
             if (invoice == null)
             {
                 return HttpNotFound();
             }
+
             return View(invoice);
         }
+
 
         // GET: Invoices/Create
         public ActionResult Create()

@@ -1,67 +1,139 @@
 ﻿@model QuanLyLamDep.Models.Invoice
-
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Chi tiết hóa đơn";
     Layout = "~/Views/Shared/_MasterLayout.cshtml";
 }
 
-<h2>Details</h2>
+<h2><i class="fas fa-file-invoice"></i> Chi tiết hóa đơn #@Model.InvoiceID</h2>
 
-<div>
-    <h4>Invoice</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
+<!-- Thông báo -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
 
-        <dd>
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
+<!-- Thông tin chung -->
+<div class="card mb-4 p-3 shadow-sm">
+    <h4 class="mb-3">Thông tin hóa đơn</h4>
+    <dl class="row">
+        <dt class="col-sm-3">Ngày tạo</dt>
+        <dd class="col-sm-9">@Model.CreatedDate?.ToString("dd/MM/yyyy HH:mm")</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.TotalAmount)
-        </dt>
+        <dt class="col-sm-3">Tổng tiền</dt>
+        <dd class="col-sm-9">@Model.TotalAmount.ToString("N0") đ</dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.TotalAmount)
-        </dd>
+        <dt class="col-sm-3">Phương thức thanh toán</dt>
+        <dd class="col-sm-9">@Model.PaymentMethod</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.PaymentMethod)
-        </dt>
+        <dt class="col-sm-3">Trạng thái</dt>
+        <dd class="col-sm-9">@Model.PaymentStatus</dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.PaymentMethod)
-        </dd>
+        <dt class="col-sm-3">Khách hàng</dt>
+        <dd class="col-sm-9">@Model.Customer?.FullName</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.PaymentStatus)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PaymentStatus)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Customer.FullName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Customer.FullName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Employee.FullName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Employee.FullName)
-        </dd>
-
+        <dt class="col-sm-3">Nhân viên</dt>
+        <dd class="col-sm-9">@Model.Employee?.FullName</dd>
     </dl>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.InvoiceID }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+
+<!-- Danh sách dịch vụ (nếu có) -->
+@if (Model.InvoiceDetails.Any(i => i.ServiceID != null))
+{
+    <div class="card mb-4 p-3 shadow-sm">
+        <h4 class="mb-3">Dịch vụ</h4>
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Tên dịch vụ</th>
+                    <th>Đơn giá</th>
+                    <th>Số lượng</th>
+                    <th>Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.InvoiceDetails.Where(i => i.ServiceID != null))
+                {
+                    <tr>
+                        <td>@item.Service?.Name</td>
+                        <td>@item.UnitPrice.ToString("N0") đ</td>
+                        <td>@item.Quantity</td>
+                        <td>@(item.UnitPrice * item.Quantity).ToString("N0") đ</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="text-end">
+            @Html.ActionLink("Thanh toán dịch vụ", "PayForService", "Invoices", new { id = Model.InvoiceID }, new { @class = "btn btn-success" })
+        </div>
+    </div>
+}
+
+<!-- Danh sách sản phẩm (nếu có) -->
+@if (Model.InvoiceDetails.Any(i => i.ProductID != null))
+{
+    <div class="card mb-4 p-3 shadow-sm">
+        <h4 class="mb-3">Sản phẩm</h4>
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Tên sản phẩm</th>
+                    <th>Đơn giá</th>
+                    <th>Số lượng</th>
+                    <th>Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.InvoiceDetails.Where(i => i.ProductID != null))
+                {
+                    <tr>
+                        <td>@item.Product?.Name</td>
+                        <td>@item.UnitPrice.ToString("N0") đ</td>
+                        <td>@item.Quantity</td>
+                        <td>@(item.UnitPrice * item.Quantity).ToString("N0") đ</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="text-end">
+            @Html.ActionLink("Thanh toán sản phẩm", "PayForProduct", "Invoices", new { id = Model.InvoiceID }, new { @class = "btn btn-primary" })
+        </div>
+    </div>
+}
+
+<!-- Lịch sử thanh toán -->
+@if (Model.Payments != null && Model.Payments.Any())
+{
+    <div class="card p-3 shadow-sm">
+        <h4 class="mb-3">Lịch sử thanh toán</h4>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Ngày thanh toán</th>
+                    <th>Phương thức</th>
+                    <th>Số tiền</th>
+                    <th>Trạng thái</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var payment in Model.Payments)
+                {
+                    <tr>
+                        <td>@payment.PaymentDate?.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@payment.Method</td>
+                        <td>@payment.Amount.ToString("N0") đ</td>
+                        <td>@payment.Status</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<hr />
+<div class="mt-4">
+    @Html.ActionLink("← Quay lại danh sách hóa đơn", "Index", null, new { @class = "btn btn-secondary" })
+</div>

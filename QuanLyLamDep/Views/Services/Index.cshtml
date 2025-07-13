@@ -1,0 +1,524 @@
+﻿@model IEnumerable<QuanLyLamDep.Models.Service>
+@{
+    ViewBag.Title = "Chọn Dịch Vụ";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+<style>
+    .service-container {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+
+    .service-header {
+        text-align: center;
+        color: white;
+        margin-bottom: 3rem;
+    }
+
+        .service-header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .service-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+
+    .service-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        position: relative;
+        border: 2px solid transparent;
+    }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+
+    .service-card-header {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .service-card-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+    @@keyframes shimmer {
+        0% {
+            transform: translateX(-100%) translateY(-100%);
+        }
+
+        100% {
+            transform: translateX(100%) translateY(100%);
+        }
+    }
+
+    .service-name {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .service-group {
+        background: rgba(255,255,255,0.2);
+        padding: 0.3rem 1rem;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        display: inline-block;
+        position: relative;
+        z-index: 1;
+    }
+
+    .service-card-body {
+        padding: 1.5rem;
+    }
+
+    .service-description {
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        height: 60px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+
+    .service-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+
+    .service-price {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #e91e63;
+        display: flex;
+        align-items: center;
+    }
+
+        .service-price::before {
+            content: '💰';
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+    .service-duration {
+        color: #666;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+    }
+
+        .service-duration::before {
+            content: '⏱️';
+            margin-right: 0.5rem;
+        }
+
+    .service-status {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        z-index: 2;
+    }
+
+    .status-active {
+        background: #4caf50;
+        color: white;
+    }
+
+    .status-inactive {
+        background: #f44336;
+        color: white;
+    }
+
+    .service-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-select {
+        flex: 1;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 600;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+        .btn-select:hover {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+            transform: scale(1.05);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-select::before {
+            content: '🛍️';
+            font-size: 1.1rem;
+        }
+
+    .btn-details {
+        background: #f8f9fa;
+        color: #666;
+        border: 2px solid #e9ecef;
+        padding: 0.8rem 1rem;
+        border-radius: 25px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .btn-details:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .btn-details::before {
+            content: '📋';
+            margin-right: 0.3rem;
+        }
+
+    .no-services {
+        text-align: center;
+        color: white;
+        font-size: 1.2rem;
+        margin-top: 3rem;
+    }
+
+    .search-filter {
+        max-width: 600px;
+        margin: 0 auto 2rem;
+        padding: 0 1rem;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        border: none;
+        border-radius: 25px;
+        font-size: 1rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        outline: none;
+    }
+
+        .search-input:focus {
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+    @@media (max-width: 768px) {
+        .services-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .service-header h1 {
+            font-size: 2rem;
+        }
+
+        .service-details {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .service-actions {
+            flex-direction: column;
+        }
+    }
+
+    .quantity-control {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 5px;
+    }
+
+    .quantity-btn {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.9rem;
+        background-color: #667eea;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        .quantity-btn:hover {
+            background-color: #5a67d8;
+        }
+    /* --- Cart Sidebar Styling --- */
+    .cart-sidebar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 350px;
+        height: 100vh;
+        background: white;
+        box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        z-index: 1000;
+        overflow-y: auto;
+        border-left: 5px solid #764ba2;
+        font-family: 'Varela Round', sans-serif;
+    }
+
+        .cart-sidebar h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #764ba2;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .cart-sidebar ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .cart-sidebar li {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+            font-size: 0.95rem;
+            color: #333;
+        }
+
+        .cart-sidebar strong {
+            display: block;
+            color: #333;
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .cart-sidebar .quantity-control {
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cart-sidebar .quantity-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+            .cart-sidebar .quantity-btn:hover {
+                background: linear-gradient(45deg, #764ba2, #667eea);
+            }
+
+        .cart-sidebar #cartTotal {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #e91e63;
+        }
+
+        .cart-sidebar form {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .cart-sidebar .btn-success {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .cart-sidebar .btn-success:hover {
+                background: linear-gradient(45deg, #764ba2, #667eea);
+            }
+</style>
+
+<div class="service-container">
+    <div class="service-header">
+        <h1>Chọn Dịch Vụ Làm Đẹp</h1>
+        <p>Khám phá các dịch vụ chăm sóc sắc đẹp tuyệt vời của chúng tôi</p>
+    </div>
+
+    <div class="services-grid">
+        @foreach (var item in Model)
+        {
+            <div class="service-card">
+                <div class="service-card-header">
+                    <div class="service-name">@item.Name</div>
+                    <div class="service-group">@item.ServiceGroup.Name</div>
+                    <div class="service-status @(item.Status == "Active" ? "status-active" : "status-inactive")">
+                        @item.Status
+                    </div>
+                </div>
+                <div class="service-card-body">
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                        <img src="@Url.Content(item.ImageUrl)" alt="Ảnh dịch vụ" style="width: 100%; height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 1rem;" />
+                    }
+                    <div class="service-description">@item.Description</div>
+                    <div class="service-details">
+                        <div class="service-price">@item.Price VNĐ</div>
+                        <div class="service-duration">@item.Duration phút</div>
+                    </div>
+                    <div class="service-actions">
+                        <button class="btn-select" onclick="addToCart('@item.ServiceID', '@item.Name', @item.Price)">Chọn Dịch Vụ</button>
+                        @Html.ActionLink("Chi Tiết", "Details", new { id = item.ServiceID }, new { @class = "btn-details" })
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Cart Sidebar -->
+<div class="cart-sidebar" id="cartSidebar" style="display: none; padding: 1rem; background: #fff; box-shadow: -4px 0 12px rgba(0,0,0,0.1); position: fixed; top: 0; right: 0; width: 350px; height: 100vh; overflow-y: auto; z-index: 1000;">
+    <h3>Giỏ Hàng</h3>
+    <ul id="cartList" style="list-style: none; padding-left: 0;"></ul>
+    <div style="margin-top: 1rem;">
+        <strong>Tổng cộng:</strong> <span id="cartTotal">0</span> VNĐ
+    </div>
+    <form id="checkoutForm" method="post" action="@Url.Action("BookMultipleServices", "Services")">
+        <input type="hidden" name="selectedServices" id="selectedServicesInput" />
+        <button type="button" class="btn btn-success" onclick="confirmCheckout()">Thanh Toán Ngay</button>
+    </form>
+</div>
+
+<script>
+    let cart = [];
+
+    function addToCart(serviceId, serviceName, price) {
+        const existing = cart.find(item => item.id === serviceId);
+        if (existing) {
+            existing.quantity += 1;
+        } else {
+            cart.push({ id: serviceId, name: serviceName, price: parseFloat(price), quantity: 1 });
+        }
+        renderCart();
+        document.getElementById("cartSidebar").style.display = "block";
+    }
+
+    function updateQuantity(serviceId, delta) {
+        const item = cart.find(x => x.id === serviceId);
+        if (item) {
+            item.quantity += delta;
+            if (item.quantity <= 0) cart = cart.filter(x => x.id !== serviceId);
+            renderCart();
+        }
+    }
+
+    function renderCart() {
+        const cartList = document.getElementById("cartList");
+        const cartTotal = document.getElementById("cartTotal");
+        const selectedServicesInput = document.getElementById("selectedServicesInput");
+
+        cartList.innerHTML = "";
+        let total = 0;
+        let services = [];
+
+        cart.forEach(service => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+                <strong>${service.name}</strong><br/>
+                ${service.price.toLocaleString()} VNĐ x ${service.quantity}
+                <div class="quantity-control">
+                    <button class="quantity-btn" onclick="updateQuantity('${service.id}', -1)">-</button>
+                    <span>${service.quantity}</span>
+                    <button class="quantity-btn" onclick="updateQuantity('${service.id}', 1)">+</button>
+                </div>
+            `;
+            cartList.appendChild(li);
+            total += service.price * service.quantity;
+            services.push(`${service.id}:${service.quantity}`);
+        });
+
+        cartTotal.textContent = total.toLocaleString();
+        selectedServicesInput.value = services.join(",");
+    }
+
+    // ✅ Di chuyển ra ngoài để có thể được gọi
+    function confirmCheckout() {
+        if (cart.length === 0) {
+            alert("❌ Vui lòng chọn ít nhất 1 dịch vụ trước khi thanh toán.");
+            return;
+        }
+
+        const confirmResult = confirm("💳 Bạn có chắc chắn muốn thanh toán cho các dịch vụ đã chọn không?");
+        if (confirmResult) {
+            document.getElementById("checkoutForm").submit();
+        }
+    }
+</script>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success" style="margin: 15px;">@TempData["Success"]</div>
+}
+

@@ -138,6 +138,8 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InvoicesController.cs" />
     <Compile Include="Controllers\PaymentsController.cs" />
+    <Compile Include="Controllers\ProductsController.cs" />
+    <Compile Include="Controllers\ServicesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -189,8 +191,11 @@
     <Compile Include="Models\ViewModels\InvoiceViewModel.cs" />
     <Compile Include="Models\ViewModels\PaymentViewModel.cs" />
     <Compile Include="Models\ViewModels\ProductDetailViewModel.cs" />
+    <Compile Include="Models\ViewModels\ProductOrder.cs" />
+    <Compile Include="Models\ViewModels\ProductOrderDetail.cs" />
     <Compile Include="Models\ViewModels\ServiceViewModel.cs" />
     <Compile Include="Models\ViewModels\ServiceDetailViewModel.cs" />
+    <Compile Include="Models\ViewModels\ServiceWithQuantityViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -299,6 +304,22 @@
     <Content Include="Views\Invoices\Details.cshtml" />
     <Content Include="Views\Invoices\Edit.cshtml" />
     <Content Include="Views\Invoices\Index.cshtml" />
+    <Content Include="Views\Services\Create.cshtml" />
+    <Content Include="Views\Services\Delete.cshtml" />
+    <Content Include="Views\Services\Details.cshtml" />
+    <Content Include="Views\Services\Edit.cshtml" />
+    <Content Include="Views\Services\Index.cshtml" />
+    <Content Include="Views\Services\Checkout.cshtml" />
+    <Content Include="Views\Payments\EnterCustomerInfo.cshtml" />
+    <Content Include="Views\Services\ConfirmCheckout.cshtml" />
+    <Content Include="Views\Payments\QRCode.cshtml" />
+    <Content Include="Views\Products\Create.cshtml" />
+    <Content Include="Views\Products\Delete.cshtml" />
+    <Content Include="Views\Products\Details.cshtml" />
+    <Content Include="Views\Products\Edit.cshtml" />
+    <Content Include="Views\Products\Index.cshtml" />
+    <Content Include="Views\Products\Checkout.cshtml" />
+    <Content Include="Views\Payments\EnterCustomerInfoProduct.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

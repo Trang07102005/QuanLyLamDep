@@ -9,201 +9,205 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quản lý hóa đơn - Beauty Salon</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 
+    <style>
         body {
-            font-family: 'Varela Round', sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            margin: 0;
             padding: 20px;
         }
 
         .container {
             max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            margin: auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
             text-align: center;
+            margin-bottom: 30px;
         }
 
         .header h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        .main-content {
-            padding: 30px;
-            background: #f8f9fa;
-        }
-
-        .invoice-card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            margin-bottom: 20px;
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        .invoice-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-            border-color: #667eea;
-        }
-
-        .invoice-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-        }
-
-        .invoice-name {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .invoice-price {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #e91e63;
-        }
-
-        .invoice-info {
-            color: #666;
-            margin-bottom: 15px;
-            line-height: 1.5;
-        }
-
-        .add-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .add-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            font-size: 2.4rem;
+            color: #4a3f8c;
         }
 
         .summary-card {
-            background: #f8f9fa;
+            background: #f0f2f5;
             padding: 20px;
-            border-radius: 15px;
+            border-radius: 12px;
             margin-bottom: 30px;
         }
 
         .summary-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            font-size: 1rem;
         }
 
         .summary-total {
-            font-size: 1.2rem;
-            font-weight: 700;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-top: 2px solid #ddd;
+            padding-top: 12px;
+            margin-top: 12px;
+        }
+
+        .invoice-card {
+            background: white;
+            border: 1px solid #eee;
+            border-left: 5px solid #667eea;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: 0.3s ease;
+        }
+
+        .invoice-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .invoice-name {
+            font-size: 1.1rem;
+            font-weight: bold;
             color: #333;
-            border-top: 2px solid #e9ecef;
-            padding-top: 15px;
-            margin-top: 15px;
+        }
+
+        .invoice-price {
+            font-size: 1.3rem;
+            color: #e91e63;
+            font-weight: bold;
+        }
+
+        .invoice-info p {
+            margin: 4px 0;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .form-control {
+            padding: 6px 10px;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .add-btn:hover {
+            background: linear-gradient(135deg, #5a6eea, #6a3aa2);
+        }
+
+        .paid-status {
+            color: green;
+            font-weight: bold;
+            font-size: 1rem;
         }
 
         @@media (max-width: 768px) {
-            .container {
-                margin: 10px;
+            .invoice-header {
+                flex-direction: column;
+                gap: 10px;
             }
 
-            .header h1 {
-                font-size: 2rem;
+            .invoice-price {
+                align-self: flex-end;
             }
+        }
+        .form-control {
+            margin-bottom: 15px; /* tăng lên một chút */
+        }
+        .invoice-info p strong {
+            display: inline-block;
+            margin-top: 10px;
         }
 
-        @@keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1><i class="fas fa-spa"></i> Beauty Salon</h1>
-            <p>Quản lý hóa đơn và thanh toán</p>
+            <h1><i class="fas fa-receipt"></i> Quản lý hóa đơn</h1>
         </div>
 
-        <div class="main-content">
-            <div class="summary-card">
-                <h4><i class="fas fa-chart-line"></i> Tổng quan</h4>
-                <div class="summary-row">
-                    <span>Tổng hóa đơn:</span>
-                    <span>@Model.Count()</span>
-                </div>
-                <div class="summary-row summary-total">
-                    <span>Tổng doanh thu:</span>
-                    <span>@Model.Sum(i => i.TotalAmount).ToString("N0") VNĐ</span>
-                </div>
+        <div class="summary-card">
+            <div class="summary-row">
+                <span><i class="fas fa-file-invoice"></i> Tổng hóa đơn:</span>
+                <span>@Model.Count()</span>
             </div>
+            <div class="summary-row summary-total">
+                <span><i class="fas fa-coins"></i> Tổng doanh thu:</span>
+                <span>@Model.Sum(i => i.TotalAmount).ToString("N0") VNĐ</span>
+            </div>
+        </div>
 
-            <div class="invoices-grid">
-                @foreach (var invoice in Model)
-                {
-                    <div class="invoice-card">
-                        <div class="invoice-header">
-                            <div>
-                                <div class="invoice-name">Hóa đơn #@invoice.InvoiceID</div>
-                                <div class="invoice-info">Khách hàng: @invoice.Customer?.FullName</div>
-                            </div>
-                            <div class="invoice-price">@invoice.TotalAmount.ToString("N0") VNĐ</div>
-                        </div>
-                        <div class="invoice-info">
-                            <p>Ngày tạo: @(invoice.CreatedDate.HasValue ? invoice.CreatedDate.Value.ToString("dd/MM/yyyy") : "")</p>
-                            <p>Trạng thái: @invoice.PaymentStatus</p>
-                            <p>Phương thức: @invoice.PaymentMethod</p>
-                        </div>
-                        <a class="add-btn" href="@Url.Action("AddPayment", new { id = invoice.InvoiceID })">
-                            <i class="fas fa-plus"></i> Thêm thanh toán
-                        </a>
+        @foreach (var invoice in Model)
+        {
+            <div class="invoice-card">
+                <div class="invoice-header">
+                    <div>
+                        <div class="invoice-name">Hóa đơn #@invoice.InvoiceID</div>
+                        <p><strong>Khách hàng:</strong> @(invoice.Customer?.FullName ?? "<i>Không xác định</i>")</p>
+                        <p><strong>Nhân viên:</strong> @(invoice.Employee?.FullName ?? "<i>Không xác định</i>")</p>
                     </div>
-                }
-            </div>
-        </div>
+                    <div class="invoice-price">@invoice.TotalAmount.ToString("N0") VNĐ</div>
+                </div>
+
+                <div class="invoice-info">
+                    <p><strong>Ngày tạo:</strong> @(invoice.CreatedDate.HasValue ? invoice.CreatedDate.Value.ToString("dd/MM/yyyy") : "N/A")</p>
+                    <p><strong>Trạng thái:</strong> @invoice.PaymentStatus</p>
+                    @if (invoice.PaymentStatus != "Đã thanh toán")
+                    {
+                        using (Html.BeginForm("HandlePaymentMethod", "Payments", FormMethod.Post))
+                        {
+                            <input type="hidden" name="InvoiceID" value="@invoice.InvoiceID" />
+                            <p><strong>Phương thức:</strong></p>
+                            <select name="Method" class="form-control" required>
+                                <option value="">-- Chọn phương thức --</option>
+                                <option value="Tiền mặt" @(invoice.PaymentMethod == "Tiền mặt" ? "selected" : "")>💵 Tiền mặt</option>
+                                <option value="Chuyển khoản" @(invoice.PaymentMethod == "Chuyển khoản" ? "selected" : "")>🏦 Chuyển khoản</option>
+                                <option value="Thẻ" @(invoice.PaymentMethod == "Thẻ" ? "selected" : "")>💳 Thẻ</option>
+                            </select>
+                            <button type="submit" class="add-btn">Thanh toán</button>
+                        }
+                    }
+                    else
+                    {
+                        <p><strong>Phương thức:</strong> @invoice.PaymentMethod</p>
+                        <div class="paid-status">Đã thanh toán</div>
+                    }
+
+                </div>
+
+
+                </div>
+        }
     </div>
 </body>
 </html>

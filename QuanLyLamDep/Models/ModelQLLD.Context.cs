@@ -24,7 +24,7 @@ namespace QuanLyLamDep.Models
         {
             throw new UnintentionalCodeFirstException();
         }
-    
+        public virtual DbSet<Category> ImageUrl { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }

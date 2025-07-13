@@ -1,0 +1,600 @@
+﻿
+@model List<QuanLyLamDep.Models.Service>
+@{
+    ViewBag.Title = "Thông tin khách hàng";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+    var total = ViewBag.Total;
+}
+
+<style>
+    .customer-container {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+
+    .customer-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+
+    .customer-header {
+        text-align: center;
+        color: white;
+        margin-bottom: 2rem;
+    }
+
+    .customer-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .customer-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .customer-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        align-items: start;
+    }
+
+    .customer-form-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .customer-form-header {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .customer-form-header h3 {
+        margin: 0;
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+
+    .customer-form-header::before {
+        content: '👤';
+        font-size: 1.5rem;
+    }
+
+    .customer-form-body {
+        padding: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-control:hover {
+        border-color: #667eea;
+        background: white;
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 1rem 2rem;
+        background: linear-gradient(45deg, #28a745, #20c997);
+        color: white;
+        border: none;
+        border-radius: 15px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-submit:hover {
+        background: linear-gradient(45deg, #218838, #1ea080);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+    }
+
+    .btn-submit::before {
+        content: '✓';
+        font-size: 1.2rem;
+    }
+
+    .btn-submit::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        animation: shine 2s infinite;
+    }
+
+    @@keyframes shine {
+        0% { left: -100%; }
+        50% { left: 100%; }
+        100% { left: 100%; }
+    }
+
+    .services-summary-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .services-summary-header {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .services-summary-header h3 {
+        margin: 0;
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+
+    .services-summary-header::before {
+        content: '🛍️';
+        font-size: 1.5rem;
+    }
+
+    .services-list {
+        padding: 0;
+    }
+
+    .service-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem;
+        border-bottom: 1px solid #f0f0f0;
+        transition: background 0.3s ease;
+    }
+
+    .service-item:hover {
+        background: #f8f9fa;
+    }
+
+    .service-item:last-child {
+        border-bottom: none;
+    }
+
+    .service-info {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .service-icon {
+        width: 45px;
+        height: 45px;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        color: white;
+        flex-shrink: 0;
+    }
+
+    .service-details {
+        flex: 1;
+    }
+
+    .service-name {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.2rem;
+    }
+
+    .service-price {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #e91e63;
+        text-align: right;
+    }
+
+    .total-summary {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.3rem;
+        font-weight: 700;
+    }
+
+    .total-summary::before {
+        content: '💰';
+        font-size: 1.6rem;
+        margin-right: 1rem;
+    }
+
+    .form-validation {
+        position: relative;
+    }
+
+    .form-validation .form-control:invalid {
+        border-color: #dc3545;
+    }
+
+    .form-validation .form-control:valid {
+        border-color: #28a745;
+    }
+
+    .required-field::after {
+        content: ' *';
+        color: #dc3545;
+        font-weight: bold;
+    }
+
+    @@media (max-width: 992px) {
+        .customer-content {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .customer-header h1 {
+            font-size: 2rem;
+        }
+
+        .customer-wrapper {
+            padding: 0 0.5rem;
+        }
+
+        .customer-form-body {
+            padding: 1.5rem;
+        }
+
+        .service-item {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .service-info {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .service-price {
+            text-align: center;
+        }
+
+        .total-summary {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+    }
+
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .btn-back {
+        display: inline-block;
+        margin-top: 1rem;
+        width: 100%;
+        text-align: center;
+        padding: 0.9rem 2rem;
+        background: none;
+        color: #667eea;
+        font-weight: 600;
+        border: 2px solid #667eea;
+        border-radius: 12px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+        .btn-back:hover {
+            background: #667eea;
+            color: white;
+        }
+
+</style>
+
+<div class="customer-container">
+    <div class="customer-wrapper">
+        <div class="customer-header">
+            <h1>Thông Tin Khách Hàng</h1>
+            <p>Vui lòng điền thông tin để hoàn tất đặt dịch vụ</p>
+        </div>
+
+        <div class="customer-content">
+            <!-- Form thông tin khách hàng -->
+            <div class="customer-form-card">
+                <div class="customer-form-header">
+                    <h3>Thông Tin Cá Nhân</h3>
+                </div>
+
+                <div class="customer-form-body">
+                    @using (Html.BeginForm("SubmitPayment", "Payments", FormMethod.Post))
+                    {
+                        <input type="hidden" name="selectedServiceIds" value="@ViewBag.SelectedServiceIds" />
+
+                        <div class="form-group form-validation">
+                            <label for="fullName" class="required-field">Họ và tên</label>
+                            <input type="text" id="fullName" name="FullName" class="form-control" required placeholder="Nhập họ và tên của bạn" />
+                        </div>
+
+                        <div class="form-group form-validation">
+                            <label for="phone" class="required-field">Số điện thoại</label>
+                            <input type="tel" id="phone" name="Phone" class="form-control" required placeholder="Nhập số điện thoại" pattern="[0-9]{10,11}" />
+                        </div>
+
+                        <div class="form-group form-validation">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="Email" class="form-control" placeholder="Nhập địa chỉ email (không bắt buộc)" />
+                        </div>
+
+                        <button type="submit" class="btn-submit">
+                            Xác Nhận & Thanh Toán
+                        </button>
+                        <a href="@Url.Action("SelectService", "Services")" class="btn-back">← Quay lại chọn dịch vụ</a>
+
+                    }
+                </div>
+            </div>
+
+            <!-- Danh sách dịch vụ đã chọn -->
+            <div class="services-summary-card">
+                <div class="services-summary-header">
+                    <h3>Dịch Vụ Đã Chọn</h3>
+                </div>
+
+                <div class="services-list">
+                    @foreach (var service in Model)
+                    {
+                        <div class="service-item">
+                            <div class="service-info">
+                                <div class="service-icon">💎</div>
+                                <div class="service-details">
+                                    <div class="service-name">@service.Name</div>
+                                </div>
+                            </div>
+                            <div class="service-price">@service.Price.ToString("N0") VNĐ</div>
+                        </div>
+                    }
+                </div>
+
+                <div class="total-summary">
+                    <span>Tổng Thanh Toán:</span>
+                    <span>@total.ToString("N0") VNĐ</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add entrance animation
+        const formCard = document.querySelector('.customer-form-card');
+        const summaryCard = document.querySelector('.services-summary-card');
+
+        if (formCard && summaryCard) {
+            formCard.style.transform = 'translateX(-30px)';
+            formCard.style.opacity = '0';
+            summaryCard.style.transform = 'translateX(30px)';
+            summaryCard.style.opacity = '0';
+
+            setTimeout(() => {
+                formCard.style.transition = 'all 0.6s ease';
+                summaryCard.style.transition = 'all 0.6s ease';
+                formCard.style.transform = 'translateX(0)';
+                formCard.style.opacity = '1';
+                summaryCard.style.transform = 'translateX(0)';
+                summaryCard.style.opacity = '1';
+            }, 100);
+        }
+
+        // Add stagger animation for service items
+        const serviceItems = document.querySelectorAll('.service-item');
+        serviceItems.forEach((item, index) => {
+            item.style.transform = 'translateY(20px)';
+            item.style.opacity = '0';
+
+            setTimeout(() => {
+                item.style.transition = 'all 0.4s ease';
+                item.style.transform = 'translateY(0)';
+                item.style.opacity = '1';
+            }, 300 + (index * 100));
+        });
+
+        // Form validation
+        const form = document.querySelector('form');
+        const fullNameInput = document.getElementById('fullName');
+        const phoneInput = document.getElementById('phone');
+        const emailInput = document.getElementById('email');
+
+        // Real-time validation
+        fullNameInput.addEventListener('input', function() {
+            validateFullName(this);
+        });
+
+        phoneInput.addEventListener('input', function() {
+            validatePhone(this);
+        });
+
+        emailInput.addEventListener('input', function() {
+            validateEmail(this);
+        });
+
+        // Form submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (validateForm()) {
+                showLoading();
+                // Submit the form after a short delay to show loading effect
+                setTimeout(() => {
+                    this.submit();
+                }, 500);
+            }
+        });
+
+        // Validation functions
+        function validateFullName(input) {
+            const value = input.value.trim();
+            if (value.length < 2) {
+                input.setCustomValidity('Họ tên phải có ít nhất 2 ký tự');
+                return false;
+            }
+            input.setCustomValidity('');
+            return true;
+        }
+
+        function validatePhone(input) {
+            const value = input.value.trim();
+            const phoneRegex = /^[0-9]{10,11}$/;
+            if (!phoneRegex.test(value)) {
+                input.setCustomValidity('Số điện thoại phải có 10-11 chữ số');
+                return false;
+            }
+            input.setCustomValidity('');
+            return true;
+        }
+
+        function validateEmail(input) {
+            const value = input.value.trim();
+            if (value && !input.validity.valid) {
+                input.setCustomValidity('Email không hợp lệ');
+                return false;
+            }
+            input.setCustomValidity('');
+            return true;
+        }
+
+        function validateForm() {
+            return validateFullName(fullNameInput) &&
+                   validatePhone(phoneInput) &&
+                   validateEmail(emailInput);
+        }
+
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        // Add ripple effect to submit button
+        const submitBtn = document.querySelector('.btn-submit');
+        submitBtn.addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+
+            ripple.style.cssText = `
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.6);
+                pointer-events: none;
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                width: ${size}px;
+                height: ${size}px;
+                left: ${x}px;
+                top: ${y}px;
+            `;
+
+            this.appendChild(ripple);
+
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    });
+
+    // Add ripple animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @@keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+</script>

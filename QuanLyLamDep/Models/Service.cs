@@ -27,6 +27,7 @@ namespace QuanLyLamDep.Models
         public decimal Price { get; set; }
         public int Duration { get; set; }
         public string Status { get; set; }
+        public string ImageUrl { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<InvoiceDetail> InvoiceDetails { get; set; }

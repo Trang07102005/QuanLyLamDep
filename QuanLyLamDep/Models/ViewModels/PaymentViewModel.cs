@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 
 namespace QuanLyLamDep.Models.ViewModels
 {
@@ -52,4 +53,6 @@ namespace QuanLyLamDep.Models.ViewModels
         // Liên kết đến hóa đơn
         public int InvoiceID { get; set; }
     }
+    
+
 }

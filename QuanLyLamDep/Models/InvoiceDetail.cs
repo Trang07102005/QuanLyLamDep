@@ -16,11 +16,14 @@ namespace QuanLyLamDep.Models
     {
         public int InvoiceDetailID { get; set; }
         public int InvoiceID { get; set; }
-        public int ServiceID { get; set; }
+        public int? ServiceID { get; set; }
         public int Quantity { get; set; }
+        public int? ProductID { get; set; } // ?? THÊM D?NG NÀY
         public decimal UnitPrice { get; set; }
     
         public virtual Invoice Invoice { get; set; }
         public virtual Service Service { get; set; }
+        public virtual Product Product { get; set; } // ?? N?u mu?n navigation
+
     }
 }

@@ -1,0 +1,502 @@
+﻿@model int?
+@{
+    ViewBag.Title = "Quét mã QR để chuyển khoản";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+<style>
+    .payment-container {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 2rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .payment-wrapper {
+        max-width: 500px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+
+    .payment-header {
+        text-align: center;
+        color: white;
+        margin-bottom: 2rem;
+    }
+
+    .payment-header h1 {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .payment-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 0;
+    }
+
+    .payment-card {
+        background: white;
+        border-radius: 25px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        overflow: hidden;
+        animation: slideUp 0.6s ease;
+    }
+
+    .payment-card-header {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+        position: relative;
+    }
+
+    .payment-card-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="1" fill="white" opacity="0.1"/><circle cx="80" cy="30" r="1.5" fill="white" opacity="0.1"/><circle cx="40" cy="70" r="1" fill="white" opacity="0.1"/><circle cx="90" cy="80" r="1" fill="white" opacity="0.1"/></svg>');
+        pointer-events: none;
+    }
+
+    .payment-card-header h2 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .payment-card-header h2::before {
+        content: '📱';
+        font-size: 2rem;
+        animation: pulse 2s infinite;
+    }
+
+    .payment-card-body {
+        padding: 2.5rem;
+        text-align: center;
+    }
+
+    .qr-container {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 2rem;
+    }
+
+    .qr-wrapper {
+        background: white;
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border: 3px solid #f8f9fa;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .qr-wrapper::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, transparent 30%, rgba(102, 126, 234, 0.05) 50%, transparent 70%);
+        animation: shimmer 3s infinite;
+    }
+
+    .qr-code {
+        width: 280px;
+        height: 280px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        position: relative;
+        z-index: 1;
+    }
+
+    .payment-instruction {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .payment-instruction strong {
+        color: #495057;
+        font-weight: 600;
+    }
+
+    .confirm-button {
+        width: 100%;
+        padding: 1.2rem 2rem;
+        background: linear-gradient(45deg, #28a745, #20c997);
+        color: white;
+        border: none;
+        border-radius: 15px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .confirm-button:hover {
+        background: linear-gradient(45deg, #218838, #1ea080);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);
+    }
+
+    .confirm-button:active {
+        transform: translateY(-1px);
+    }
+
+    .confirm-button::before {
+        content: '✅';
+        font-size: 1.3rem;
+        animation: bounce 2s infinite;
+    }
+
+    .confirm-button::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        animation: shine 3s infinite;
+    }
+
+    .payment-steps {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border-left: 4px solid #667eea;
+    }
+
+    .payment-steps h4 {
+        color: #495057;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .payment-steps h4::before {
+        content: '📋';
+        font-size: 1.2rem;
+    }
+
+    .payment-steps ol {
+        margin: 0;
+        padding-left: 1.5rem;
+        color: #6c757d;
+    }
+
+    .payment-steps li {
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+    }
+
+    @@keyframes shimmer {
+        0% {
+            transform: translateX(-100%);
+        }
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    @@keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-5px);
+        }
+        60% {
+            transform: translateY(-3px);
+        }
+    }
+
+    @@keyframes shine {
+        0% {
+            left: -100%;
+        }
+        50% {
+            left: 100%;
+        }
+        100% {
+            left: 100%;
+        }
+    }
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .payment-wrapper {
+            padding: 0 0.5rem;
+        }
+
+        .payment-header h1 {
+            font-size: 1.8rem;
+        }
+
+        .payment-card-body {
+            padding: 1.5rem;
+        }
+
+        .qr-code {
+            width: 250px;
+            height: 250px;
+        }
+
+        .payment-card-header h2 {
+            font-size: 1.5rem;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .qr-code {
+            width: 220px;
+            height: 220px;
+        }
+
+        .payment-card-header {
+            padding: 1.5rem;
+        }
+
+        .payment-card-body {
+            padding: 1.2rem;
+        }
+    }
+    .back-button {
+        display: block;
+        margin: 1rem auto 0;
+        text-align: center;
+        background: none;
+        border: 2px solid #667eea;
+        color: #667eea;
+        font-weight: bold;
+        padding: 0.8rem 2rem;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+        .back-button:hover {
+            background: #667eea;
+            color: white;
+        }
+
+</style>
+
+<div class="payment-container">
+    <div class="payment-wrapper">
+        <div class="payment-header">
+            <h1>Thanh Toán QR Code</h1>
+            <p>Quét mã và hoàn tất giao dịch của bạn</p>
+        </div>
+
+        <div class="payment-card">
+            <div class="payment-card-header">
+                <h2>Quét Mã QR</h2>
+            </div>
+
+            <div class="payment-card-body">
+                <div class="payment-steps">
+                    <h4>Hướng dẫn thanh toán</h4>
+                    <ol>
+                        <li>Mở ứng dụng MoMo trên điện thoại</li>
+                        <li>Chọn "Quét mã QR" hoặc "Chuyển tiền"</li>
+                        <li>Quét mã QR bên dưới</li>
+                        <li>Xác nhận số tiền và hoàn tất giao dịch</li>
+                        <li>Bấm nút "Hoàn thành" để xác nhận</li>
+                    </ol>
+                </div>
+
+                <div class="qr-container">
+                    <div class="qr-wrapper">
+                        <img src="https://pngimg.com/uploads/qr_code/qr_code_PNG26.png" alt="QR Code MoMo" class="qr-code" />
+                    </div>
+                </div>
+
+                <div class="payment-instruction">
+                    <strong>Lưu ý:</strong> Vui lòng chuyển khoản đúng số tiền và bấm nút xác nhận sau khi hoàn tất giao dịch.
+                </div>
+
+                @using (Html.BeginForm("ConfirmTransfer", "Payments", FormMethod.Post))
+                {
+                    @Html.Hidden("invoiceId", Model)
+                    @Html.Hidden("method", "Chuyển khoản")
+                    <button type="submit" class="confirm-button">
+                        Hoàn thành
+                    </button>
+                    <a href="@Url.Action("Index", "Invoices")" class="back-button">Quay lại</a>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add entrance animation to QR code
+        const qrWrapper = document.querySelector('.qr-wrapper');
+        if (qrWrapper) {
+            qrWrapper.style.transform = 'scale(0.8)';
+            qrWrapper.style.opacity = '0';
+
+            setTimeout(() => {
+                qrWrapper.style.transition = 'all 0.6s ease';
+                qrWrapper.style.transform = 'scale(1)';
+                qrWrapper.style.opacity = '1';
+            }, 300);
+        }
+
+        // Form submission with loading
+        const form = document.querySelector('form');
+        const confirmButton = document.querySelector('.confirm-button');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Show loading
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            confirmButton.style.pointerEvents = 'none';
+            confirmButton.style.opacity = '0.7';
+
+            // Submit after delay
+            setTimeout(() => {
+                this.submit();
+            }, 800);
+        });
+
+        // Add ripple effect to confirm button
+        confirmButton.addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+
+            ripple.style.cssText = `
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.6);
+                pointer-events: none;
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                width: ${size}px;
+                height: ${size}px;
+                left: ${x}px;
+                top: ${y}px;
+            `;
+
+            this.appendChild(ripple);
+
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+
+        // Add periodic pulse animation to QR code
+        setInterval(() => {
+            const qrCode = document.querySelector('.qr-code');
+            if (qrCode) {
+                qrCode.style.animation = 'none';
+                setTimeout(() => {
+                    qrCode.style.animation = 'pulse 1s ease-in-out';
+                }, 10);
+            }
+        }, 5000);
+    });
+
+    // Add ripple animation keyframes
+    const style = document.createElement('style');
+    style.textContent = `
+        @@keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+</script>

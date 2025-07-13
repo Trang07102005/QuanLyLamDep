@@ -1,0 +1,19 @@
+﻿@model IEnumerable<QuanLyLamDep.Models.Service>
+@{
+    ViewBag.Title = "Xác nhận dịch vụ";
+}
+<h2>Xác nhận dịch vụ đã chọn</h2>
+<ul>
+    @foreach (var item in Model)
+    {
+        <li>@item.Name - @item.Price VNĐ</li>
+    }
+</ul>
+<form method="post" action="@Url.Action("FinalizeCheckout", "Payment")">
+    @foreach (var id in Model.Select(s => s.ServiceID))
+    {
+        <input type="hidden" name="serviceIds" value="@id" />
+    }
+    <input type="hidden" name="customerId" value="@ViewBag.CustomerID" />
+    <button type="submit" class="btn btn-primary">Thanh toán ngay</button>
+</form>
