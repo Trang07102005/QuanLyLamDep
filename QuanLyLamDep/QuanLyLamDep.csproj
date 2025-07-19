@@ -193,6 +193,7 @@
     <Compile Include="Models\ViewModels\ProductDetailViewModel.cs" />
     <Compile Include="Models\ViewModels\ProductOrder.cs" />
     <Compile Include="Models\ViewModels\ProductOrderDetail.cs" />
+    <Compile Include="Models\ViewModels\ServiceReviewVM.cs" />
     <Compile Include="Models\ViewModels\ServiceViewModel.cs" />
     <Compile Include="Models\ViewModels\ServiceDetailViewModel.cs" />
     <Compile Include="Models\ViewModels\ServiceWithQuantityViewModel.cs" />

@@ -181,6 +181,18 @@
 
                 <div class="invoice-info">
                     <p><strong>Ngày tạo:</strong> @(invoice.CreatedDate.HasValue ? invoice.CreatedDate.Value.ToString("dd/MM/yyyy") : "N/A")</p>
+                    @{
+                        string loaiHoaDon = "Hóa đơn sản phẩm";
+                        if (invoice.InvoiceDetails.Any(d => d.ServiceID != null))
+                        {
+                            loaiHoaDon = "Hóa đơn dịch vụ";
+                        }
+                        else if (invoice.InvoiceDetails.Any(d => d.ProductID != null))
+                        {
+                            loaiHoaDon = "Hóa đơn sản phẩm";
+                        }
+                    }
+                    <p><strong>Loại hóa đơn:</strong> @loaiHoaDon</p>
                     <p><strong>Trạng thái:</strong> @invoice.PaymentStatus</p>
                     @if (invoice.PaymentStatus != "Đã thanh toán")
                     {
@@ -202,6 +214,7 @@
                         <p><strong>Phương thức:</strong> @invoice.PaymentMethod</p>
                         <div class="paid-status">Đã thanh toán</div>
                     }
+
 
                 </div>
 

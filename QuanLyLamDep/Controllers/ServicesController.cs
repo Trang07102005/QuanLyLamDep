@@ -7,45 +7,62 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using QuanLyLamDep.Models;
+using QuanLyLamDep.Models.ViewModels;
 
 namespace QuanLyLamDep.Controllers
 {
-    public class ServicesController : Controller
+    public class ServiceController : Controller
     {
         private BeautySalonDBEntities db = new BeautySalonDBEntities();
 
-        // GET: Services
         public ActionResult Index()
         {
-            var services = db.Services.Include(s => s.ServiceGroup);
-            return View(services.ToList());
+            var services = db.Services.Include(s => s.ServiceGroup).ToList();
+            ViewBag.ServiceGroups = db.ServiceGroups.ToList();
+            return View(services);
         }
 
-        // GET: Services/Details/5
         public ActionResult Details(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Service service = db.Services.Find(id);
-            if (service == null)
-            {
-                return HttpNotFound();
-            }
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            Service service = db.Services.Include(s => s.ServiceGroup).FirstOrDefault(s => s.ServiceID == id);
+            if (service == null) return HttpNotFound();
+
+            // Lấy đánh giá từ Session
+            string key = "ServiceReviews_" + id;
+            var reviews = Session[key] as List<ServiceReviewVM> ?? new List<ServiceReviewVM>();
+            ViewBag.Reviews = reviews;
+
             return View(service);
         }
 
-        // GET: Services/Create
+        [HttpPost]
+        public ActionResult SubmitReview(int serviceId, string userName, int rating, string comment)
+        {
+            var review = new ServiceReviewVM
+            {
+                UserName = userName,
+                Rating = rating,
+                Comment = comment,
+                CreatedAt = DateTime.Now
+            };
+
+            string key = "ServiceReviews_" + serviceId;
+            var reviews = Session[key] as List<ServiceReviewVM> ?? new List<ServiceReviewVM>();
+            reviews.Add(review);
+            Session[key] = reviews;
+
+            TempData["ReviewSuccess"] = "Cảm ơn bạn đã đánh giá!";
+            return RedirectToAction("Details", new { id = serviceId });
+        }
+
         public ActionResult Create()
         {
             ViewBag.ServiceGroupID = new SelectList(db.ServiceGroups, "ServiceGroupID", "Name");
             return View();
         }
 
-        // POST: Services/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ServiceID,ServiceGroupID,Name,Description,Price,Duration,Status,ImageUrl")] Service service)
@@ -61,25 +78,17 @@ namespace QuanLyLamDep.Controllers
             return View(service);
         }
 
-        // GET: Services/Edit/5
         public ActionResult Edit(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
             Service service = db.Services.Find(id);
-            if (service == null)
-            {
-                return HttpNotFound();
-            }
+            if (service == null) return HttpNotFound();
+
             ViewBag.ServiceGroupID = new SelectList(db.ServiceGroups, "ServiceGroupID", "Name", service.ServiceGroupID);
             return View(service);
         }
 
-        // POST: Services/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ServiceID,ServiceGroupID,Name,Description,Price,Duration,Status,ImageUrl")] Service service)
@@ -94,22 +103,16 @@ namespace QuanLyLamDep.Controllers
             return View(service);
         }
 
-        // GET: Services/Delete/5
         public ActionResult Delete(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
             Service service = db.Services.Find(id);
-            if (service == null)
-            {
-                return HttpNotFound();
-            }
+            if (service == null) return HttpNotFound();
+
             return View(service);
         }
 
-        // POST: Services/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
@@ -122,12 +125,10 @@ namespace QuanLyLamDep.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
+            if (disposing) db.Dispose();
             base.Dispose(disposing);
         }
+
         [HttpPost]
         public ActionResult BookMultipleServices(string selectedServices)
         {
@@ -136,6 +137,7 @@ namespace QuanLyLamDep.Controllers
                 TempData["Error"] = "Bạn chưa chọn dịch vụ nào!";
                 return RedirectToAction("Index");
             }
+
             var serviceItems = selectedServices.Split(',')
                 .Select(s => s.Split(':'))
                 .Where(parts => parts.Length == 2)
@@ -145,15 +147,12 @@ namespace QuanLyLamDep.Controllers
                     Quantity = int.Parse(parts[1])
                 }).ToList();
 
-            // 🛠️ Tách riêng danh sách ID để dùng trong Contains
             var serviceIds = serviceItems.Select(x => x.ServiceID).ToList();
 
             var selectedList = db.Services
                 .Where(s => serviceIds.Contains(s.ServiceID))
                 .ToList();
 
-
-            // Gắn Quantity vào từng dịch vụ để truyền sang View
             var servicesWithQuantity = selectedList
                 .Select(s => new Service
                 {
@@ -165,7 +164,6 @@ namespace QuanLyLamDep.Controllers
                     Status = s.Status,
                     ImageUrl = s.ImageUrl,
                     ServiceGroup = s.ServiceGroup
-                    // Quantity được gắn thông qua ViewBag
                 }).ToList();
 
             ViewBag.ServiceQuantities = serviceItems.ToDictionary(x => x.ServiceID, x => x.Quantity);
@@ -177,7 +175,5 @@ namespace QuanLyLamDep.Controllers
 
             return View("Checkout", servicesWithQuantity);
         }
-
-
     }
 }

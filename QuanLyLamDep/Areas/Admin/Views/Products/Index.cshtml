@@ -5,6 +5,8 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
+<link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap&subset=vietnamese" rel="stylesheet" />
+
 <style>
     body {
         font-family: 'Varela Round', sans-serif;
@@ -26,24 +28,24 @@
         font-size: 0.95rem;
     }
 
-        table.product-table th,
-        table.product-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #e9ecef;
-            text-align: left;
-            vertical-align: middle;
-        }
+    table.product-table th,
+    table.product-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e9ecef;
+        text-align: left;
+        vertical-align: middle;
+    }
 
-        table.product-table th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            font-weight: 600;
-        }
+    table.product-table th {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-weight: 600;
+    }
 
-        table.product-table tbody tr:hover {
-            background-color: rgba(102, 126, 234, 0.1);
-            cursor: pointer;
-        }
+    table.product-table tbody tr:hover {
+        background-color: rgba(102, 126, 234, 0.1);
+        cursor: pointer;
+    }
 
     .btn-action {
         padding: 6px 14px;
@@ -56,30 +58,14 @@
         transition: all 0.3s ease;
     }
 
-    .btn-edit {
-        background: #667eea;
-        margin-right: 10px;
-    }
+    .btn-edit { background: #667eea; margin-right: 10px; }
+    .btn-edit:hover { background: #5469d4; }
 
-        .btn-edit:hover {
-            background: #5469d4;
-        }
+    .btn-details { background: #20c997; }
+    .btn-details:hover { background: #17a68a; }
 
-    .btn-details {
-        background: #20c997;
-    }
-
-        .btn-details:hover {
-            background: #17a68a;
-        }
-
-    .btn-delete {
-        background: #dc3545;
-    }
-
-        .btn-delete:hover {
-            background: #bb2d3b;
-        }
+    .btn-delete { background: #dc3545; }
+    .btn-delete:hover { background: #bb2d3b; }
 
     .create-new-btn {
         display: inline-block;
@@ -93,9 +79,7 @@
         transition: all 0.3s ease;
     }
 
-        .create-new-btn:hover {
-            background: #198754;
-        }
+    .create-new-btn:hover { background: #198754; }
 
     .action-buttons {
         display: flex;
@@ -103,26 +87,39 @@
         flex-wrap: nowrap;
     }
 
-    @@media (max-width: 768px) {
-        table.product-table th,
-        table.product-table td {
-            padding: 8px 10px;
-            font-size: 0.85rem;
-        }
-
-        .btn-action {
-            padding: 5px 10px;
-            font-size: 0.75rem;
-        }
-
-        .action-buttons {
-            flex-wrap: wrap;
-            gap: 6px;
-        }
+    .search-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        align-items: center;
     }
+
+    .search-container input {
+        min-width: 150px;
+    }
+
+    
 </style>
 
-<link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap&subset=vietnamese" rel="stylesheet" />
+@using (Html.BeginForm("Index", "Products", FormMethod.Get))
+{
+    <div class="row justify-content-center my-4">
+        <div class="col-md-10 offset-md-1">
+            <div class="search-container">
+                <input type="text" name="searchString" class="form-control" placeholder="Tìm theo tên hoặc giá..." value="@ViewBag.CurrentFilter" />
+
+                <input type="number" name="minPrice" class="form-control" placeholder="Giá từ..." value="@ViewBag.MinPrice" min="0" />
+
+                <input type="number" name="maxPrice" class="form-control" placeholder="Đến..." value="@ViewBag.MaxPrice" min="0" />
+
+                <button type="submit" class="btn btn-primary px-4 rounded-pill fw-semibold">
+                    <i class="fa fa-search me-1"></i> Tìm kiếm
+                </button>
+            </div>
+        </div>
+    </div>
+}
 
 <div class="product-list-container">
     <h2>@ViewBag.Title</h2>
@@ -139,7 +136,7 @@
                 <th>Đơn vị tính</th>
                 <th>Giá</th>
                 <th>Ngày nhập</th>
-                <th>Danh mục</th>
+                <th>Hình ảnh</th>
                 <th>Thao tác</th>
             </tr>
         </thead>
@@ -150,8 +147,19 @@
                     <td>@Html.DisplayFor(modelItem => item.Name)</td>
                     <td>@Html.DisplayFor(modelItem => item.Description)</td>
                     <td>@Html.DisplayFor(modelItem => item.Unit)</td>
-                    <td>@Html.DisplayFor(modelItem => item.UnitPrice)</td>
+                    <td>@String.Format("{0:N0} ₫", item.UnitPrice)</td>
                     <td>@(item.ImportDate.HasValue ? item.ImportDate.Value.ToString("dd/MM/yyyy") : "")</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <img src="@Url.Content(item.ImageUrl)" alt="Ảnh sản phẩm" style="max-height: 60px;" />
+                        }
+                        else
+                        {
+                            <span class="text-muted">Không có ảnh</span>
+                        }
+                    </td>
+
                     <td>@Html.DisplayFor(modelItem => item.Category.Name)</td>
                     <td>
                         <div class="action-buttons">

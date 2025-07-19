@@ -14,27 +14,36 @@ namespace QuanLyLamDep.Areas.Admin.Controllers
     {
         private BeautySalonDBEntities db = new BeautySalonDBEntities();
 
-        // GET: Admin/Products
-        public ActionResult Index()
+        // GET: Admin/Product
+        public ActionResult Index(string searchString, decimal? minPrice, decimal? maxPrice)
         {
             var products = db.Products.Include(p => p.Category);
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                // Tìm theo tên hoặc giá (dạng chuỗi)
+                products = products.Where(p =>
+                    p.Name.Contains(searchString) ||
+                    p.UnitPrice.ToString().Contains(searchString));
+            }
+
+            if (minPrice.HasValue && minPrice >= 0)
+            {
+                products = products.Where(p => p.UnitPrice >= minPrice);
+                ViewBag.MinPrice = minPrice;
+            }
+
+            if (maxPrice.HasValue && maxPrice >= 0)
+            {
+                products = products.Where(p => p.UnitPrice <= maxPrice);
+                ViewBag.MaxPrice = maxPrice;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
             return View(products.ToList());
         }
 
-        // GET: Admin/Products/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Product product = db.Products.Find(id);
-            if (product == null)
-            {
-                return HttpNotFound();
-            }
-            return View(product);
-        }
 
         // GET: Admin/Products/Create
         public ActionResult Create()
@@ -129,4 +138,5 @@ namespace QuanLyLamDep.Areas.Admin.Controllers
             base.Dispose(disposing);
         }
     }
+
 }
